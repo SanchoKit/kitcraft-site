@@ -24,7 +24,7 @@
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
+      background: radial-gradient(circle at top left, #383a40, #313338 55%, #18191c 100%);
       color: var(--text-main);
     }
 
@@ -56,12 +56,12 @@
 
     h1 {
       margin: 0;
-      font-size: 1.7rem;
+      font-size: 1.8rem;
       font-weight: 700;
     }
 
     .tagline {
-      margin: 0;
+      margin: 0.15rem 0 0;
       font-size: 0.9rem;
       color: var(--text-muted);
     }
@@ -81,6 +81,7 @@
       border-radius: 999px;
       background: var(--accent-soft);
       color: var(--accent);
+      border: 1px solid rgba(0, 0, 0, 0.2);
     }
 
     .actions {
@@ -101,14 +102,18 @@
       text-decoration: none;
       background: var(--panel);
       color: var(--text-main);
+      transition: background 0.12s ease-out, transform 0.08s ease-out, box-shadow 0.12s ease-out;
     }
 
     .btn-primary {
       background: var(--accent);
       color: #fff;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
     }
     .btn-primary:hover {
       filter: brightness(1.08);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
     }
 
     .btn-outline {
@@ -180,9 +185,16 @@
 
     .card {
       background: var(--panel);
-      border-radius: 8px;
+      border-radius: 10px;
       border: 1px solid var(--border);
       padding: 0.9rem 1rem 1rem;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+      transition: border-color 0.1s ease-out, box-shadow 0.1s ease-out, transform 0.06s ease-out;
+    }
+    .card:hover {
+      border-color: rgba(88, 101, 242, 0.6);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55);
+      transform: translateY(-1px);
     }
 
     .card-header {
@@ -251,6 +263,7 @@
       color: var(--text-muted);
       border-top: 1px solid var(--border);
       padding-top: 0.75rem;
+      text-align: left;
     }
   </style>
 </head>
@@ -260,7 +273,7 @@
       <div class="logo-title">
         <h1>KitCraft</h1>
         <p class="tagline">
-          Personal Minecraft server project running in Docker with BlueMap.  
+          Personal Minecraft server project running in Docker with BlueMap.<br />
           Hosted on my own PC for now, designed so I can move it to a Raspberry&nbsp;Pi 5 later.
         </p>
         <div class="pill-row">
@@ -327,7 +340,7 @@
         <h3>Docker + Compose</h3>
         <p>
           Runs as a single container using
-          <span class="inline-code">itzg/minecraft-server</span>.  
+          <span class="inline-code">itzg/minecraft-server</span>.<br />
           All the data lives in a bind-mounted folder (<code>./minecraft-data</code>) so I can
           copy the whole thing to another machine without reinstalling.
         </p>
@@ -348,34 +361,44 @@
       </article>
     </section>
 
-    <!-- "Live" stats panel (simulated for now) -->
+    <!-- Runtime / metrics -->
     <section class="card" style="margin-top: 1.3rem;">
       <div class="card-header">
         <div class="label">Runtime</div>
-        <div class="small">Client-side demo – real metrics would need an exposed API.</div>
+        <div class="small">
+          Demo stats here, full dashboard in cAdvisor.
+        </div>
       </div>
       <h3>Container stats (rough)</h3>
       <p>
-        These numbers are just updated in the browser to show the idea.
-        For real monitoring I’d hook this up to Docker metrics / Prometheus behind another tunnel.
+        These values are updated client-side just to give some movement on the page.
+        For the real graphs I’m using Google cAdvisor in a second container.
       </p>
 
       <div class="metric-row">
         <div class="metric">
-          <div class="metric-title">CPU</div>
+          <div class="metric-title">CPU (demo)</div>
           <div id="cpuValue" class="metric-value">~0%</div>
           <div class="metric-note">Simulated idle / spike behaviour.</div>
         </div>
         <div class="metric">
-          <div class="metric-title">Memory</div>
+          <div class="metric-title">Memory (demo)</div>
           <div id="memValue" class="metric-value">~0.0 GB</div>
-          <div class="metric-note">Target around 1.5–2 GB in actual Docker stats.</div>
+          <div class="metric-note">Actual target: ~1.5–2 GB in Docker stats.</div>
         </div>
         <div class="metric">
-          <div class="metric-title">Uptime (session)</div>
-          <div id="uptimeValue" class="metric-value">0m</div>
-          <div class="metric-note">Time since you opened this page.</div>
+          <div class="metric-title">Uptime (page)</div>
+          <div id="uptimeValue" class="metric-value">0s</div>
+          <div class="metric-note">Time since this page was opened.</div>
         </div>
+      </div>
+
+      <div style="margin-top:0.75rem;">
+        <a class="btn btn-outline"
+           href="http://enjoy-enjoying.gl.at.ply.gg:28851"
+           target="_blank" rel="noopener">
+          Open live metrics (cAdvisor)
+        </a>
       </div>
     </section>
 
@@ -395,7 +418,7 @@
 
     <footer>
       This page is mostly documentation for my own setup and a place to share the join info.
-      Real monitoring (Prometheus / Grafana / etc.) is future work.
+      Real monitoring stack (Prometheus / Grafana / etc.) is future work.
     </footer>
   </main>
 
@@ -442,15 +465,6 @@
 
     updateFakeStats();
     setInterval(updateFakeStats, 2000);
-
-    // Example of where you'd fetch real metrics later:
-    /*
-    async function fetchRealStats() {
-      const res = await fetch("https://your-metrics-endpoint.example/metrics.json");
-      const data = await res.json();
-      // then set cpuValue, memValue, etc. from data
-    }
-    */
   </script>
 </body>
 </html>
