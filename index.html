@@ -2,17 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>KitCraft - Docker Minecraft Server</title>
+  <title>KitCraft – Minecraft + Docker Notes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --bg: #050816;
-      --panel: #0f172a;
-      --accent: #38bdf8;
-      --accent-soft: rgba(56, 189, 248, 0.1);
-      --text-main: #e5e7eb;
-      --text-muted: #9ca3af;
-      --danger: #f97373;
+      --bg: #f6f8fa;
+      --panel: #ffffff;
+      --border: #d0d7de;
+      --text-main: #24292f;
+      --text-muted: #57606a;
+      --code-bg: #f3f4f6;
+      --accent: #0969da;
     }
 
     * { box-sizing: border-box; }
@@ -20,288 +20,156 @@
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #1f2933 0, #020617 55%);
+      background: var(--bg);
       color: var(--text-main);
     }
 
-    a { color: var(--accent); text-decoration: none; }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
     a:hover { text-decoration: underline; }
 
-    .page {
-      max-width: 1100px;
+    main {
+      max-width: 900px;
       margin: 0 auto;
-      padding: 2.5rem 1.5rem 3.5rem;
+      padding: 2.5rem 1.5rem 3rem;
     }
 
-    header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 2rem;
+    h1 {
+      margin: 0 0 0.5rem;
+      font-size: 1.9rem;
     }
 
-    .title {
-      font-size: clamp(1.8rem, 4vw, 2.4rem);
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
+    h2 {
+      margin-top: 2rem;
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.25rem;
     }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: var(--accent-soft);
-      color: var(--accent);
-      border-radius: 999px;
-      padding: 0.35rem 0.75rem;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-    }
-
-    .grid {
-      display: grid;
-      gap: 1.5rem;
-    }
-
-    @media (min-width: 900px) {
-      .grid-2 {
-        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-      }
-    }
-
-    .card {
-      background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(17, 24, 39, 0.98));
-      border-radius: 1.25rem;
-      border: 1px solid rgba(148, 163, 184, 0.18);
-      padding: 1.4rem 1.5rem;
-      box-shadow:
-        0 18px 45px rgba(15, 23, 42, 0.7),
-        0 0 0 1px rgba(15, 23, 42, 0.7);
-    }
-
-    .card h2 {
-      margin: 0 0 0.6rem;
-      font-size: 1.1rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--text-muted);
-    }
-
-    .card h3 {
-      margin: 0 0 0.25rem;
-      font-size: 1.0rem;
-      color: var(--text-main);
-    }
-
-    .muted {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    ul {
-      margin: 0.6rem 0 0.2rem;
-      padding-left: 1.1rem;
-      font-size: 0.95rem;
-    }
-
-    .pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.45rem;
-      margin-top: 0.6rem;
-    }
-
-    .pill {
-      padding: 0.25rem 0.6rem;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      color: var(--text-muted);
-    }
-
-    .pill-strong {
-      border-color: rgba(56, 189, 248, 0.5);
-      color: var(--accent);
-    }
-
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      margin-top: 0.8rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.55rem 0.95rem;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      font-size: 0.9rem;
-      cursor: pointer;
-      text-decoration: none;
-      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out, background 0.1s;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #0ea5e9, #22c55e);
-      color: #020617;
-      box-shadow: 0 12px 30px rgba(34, 197, 94, 0.35);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 16px 40px rgba(34, 197, 94, 0.4);
-    }
-
-    .btn-ghost {
-      background: rgba(15, 23, 42, 0.95);
-      color: var(--text-main);
-      border-color: rgba(148, 163, 184, 0.45);
-    }
-
-    .btn-ghost:hover {
-      background: rgba(15, 23, 42, 1);
-    }
-
-    .tagline {
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      max-width: 30rem;
-      margin-top: 0.4rem;
-    }
-
-    .metric-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-      margin-top: 0.8rem;
-    }
-
-    .metric {
-      flex: 1 1 110px;
-      min-width: 110px;
-      padding: 0.6rem 0.7rem;
-      border-radius: 0.9rem;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.3);
-      font-size: 0.83rem;
-    }
-
-    .metric-label {
-      color: var(--text-muted);
-      margin-bottom: 0.12rem;
-    }
-
-    .metric-value {
+    h3 {
+      margin-top: 1.2rem;
+      margin-bottom: 0.3rem;
       font-size: 1rem;
     }
 
-    .metric-small {
-      font-size: 0.78rem;
+    p {
+      margin: 0.4rem 0;
+      line-height: 1.5;
       color: var(--text-muted);
     }
 
-    .warn {
-      color: var(--danger);
+    ul {
+      margin: 0.3rem 0 0.6rem 1.2rem;
+      padding: 0;
+      color: var(--text-muted);
     }
 
-    .img-frame {
-      border-radius: 1rem;
-      overflow: hidden;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      background: radial-gradient(circle at top left, #1f2937, #020617);
-      margin-top: 0.6rem;
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.9rem;
     }
 
-    .img-frame img {
-      display: block;
-      width: 100%;
-      height: auto;
+    pre {
+      background: var(--code-bg);
+      border-radius: 6px;
+      padding: 0.75rem 0.9rem;
+      overflow: auto;
+      font-size: 0.9rem;
+      border: 1px solid #e5e7eb;
+    }
+
+    .tagline {
+      margin-bottom: 1.2rem;
+    }
+
+    .inline-code {
+      background: var(--code-bg);
+      padding: 0.05rem 0.3rem;
+      border-radius: 4px;
+    }
+
+    .box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.9rem 1rem;
+      margin-top: 0.8rem;
+    }
+
+    .small {
+      font-size: 0.85rem;
+      color: var(--text-muted);
     }
 
     footer {
-      margin-top: 2.4rem;
-      font-size: 0.78rem;
+      margin-top: 2.5rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
-      text-align: center;
+      border-top: 1px solid var(--border);
+      padding-top: 0.75rem;
     }
   </style>
 </head>
 <body>
-  <div class="page">
+  <main>
     <header>
-      <div>
-        <div class="badge">Minecraft · Docker · BlueMap</div>
-        <div class="title">KitCraft Infrastructure</div>
-        <p class="tagline">
-          A Paper 1.21.x server running in Docker with BlueMap, exposed securely via Playit tunnels and
-          ready to move onto a Raspberry&nbsp;Pi 5 as a dedicated host.
-        </p>
-      </div>
-      <div class="btn-row">
-        <a class="btn btn-primary" href="minecraft://?addExternalServer=KitCraft|later-classroom.gl.joinmc.link" title="Adds the server in supported launchers">
-          Add Server
-        </a>
-        <a class="btn btn-ghost" href="http://minimum-mathematics.gl.at.ply.gg:26308" target="_blank" rel="noopener">
-          Open Live BlueMap
-        </a>
-      </div>
+      <h1>KitCraft</h1>
+      <p class="tagline">
+        Personal Minecraft server project running in Docker with BlueMap.  
+        Hosted on my own machine for now, easy to move to a Raspberry&nbsp;Pi 5 later.
+      </p>
     </header>
 
-    <section class="grid grid-2">
-      <!-- Server / gameplay info -->
-      <article class="card">
-        <h2>Server</h2>
-        <h3>KitCraft Survival</h3>
-        <p class="muted">
-          Vanilla-style survival on a fixed 1000×1000 world with a custom seed and live web map.
+    <section>
+      <h2>How to join</h2>
+      <div class="box">
+        <p><strong>Edition:</strong> Java (Paper 1.21.x)</p>
+        <p><strong>Server address:</strong> <code>later-classroom.gl.joinmc.link</code></p>
+        <p class="small">
+          This goes through <a href="https://playit.gg" target="_blank" rel="noopener">Playit.gg</a>,
+          which tunnels traffic to my local <span class="inline-code">25565</span>.
         </p>
-        <ul>
-          <li><strong>Edition:</strong> Minecraft Java (Paper 1.21.x)</li>
-          <li><strong>Seed:</strong> <code>1331376639841402888</code></li>
-          <li><strong>World size:</strong> 1000 × 1000 blocks (worldborder)</li>
-          <li><strong>Tech:</strong> Docker, Docker Compose, BlueMap, Playit.gg</li>
-        </ul>
+      </div>
 
-        <div class="pill-row">
-          <span class="pill pill-strong">Seeded World</span>
-          <span class="pill pill-strong">Fixed Border</span>
-          <span class="pill">Paper 1.21.x</span>
-          <span class="pill">BlueMap Live View</span>
-          <span class="pill">Local → Pi-ready</span>
-        </div>
-
-        <div class="metric-row">
-          <div class="metric">
-            <div class="metric-label">Join Address</div>
-            <div class="metric-value"><code>YOUR_MINECRAFT_ADDRESS_HERE</code></div>
-            <div class="metric-small">Forwarded via Playit (TCP&nbsp;25565).</div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">Live Map</div>
-            <div class="metric-value"><code>BlueMap over TCP&nbsp;8100</code></div>
-            <div class="metric-small">Proxied using a second tunnel.</div>
-          </div>
-        </div>
-      </article>
-
-      <!-- Container / infra info -->
-      <article class="card">
-        <h2>Container</h2>
-        <h3>Docker &amp; Compose Setup</h3>
-        <p class="muted">
-          The entire server runs as a single container using the
-          <code>itzg/minecraft-server</code> image with a bind-mounted data volume.
+      <h3>Live map</h3>
+      <div class="box">
+        <p>
+          BlueMap is exposed through a second tunnel.  
+          Open the live map here:
         </p>
-<pre class="muted" style="font-size:0.75rem;background:#020617;border-radius:0.6rem;padding:0.55rem 0.75rem;overflow:auto;">
-services:
+        <p>
+          <a href="http://minimum-mathematics.gl.at.ply.gg:26308" target="_blank" rel="noopener">
+            http://minimum-mathematics.gl.at.ply.gg:26308
+          </a>
+        </p>
+        <p class="small">
+          Under the hood this is just forwarding to <span class="inline-code">localhost:8100</span> on my machine.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>World details</h2>
+      <ul>
+        <li><strong>Seed:</strong> <code>1331376639841402888</code></li>
+        <li><strong>World size:</strong> 1000 × 1000 blocks (worldborder around spawn)</li>
+        <li><strong>Style:</strong> vanilla-ish survival, mostly for experimenting and building</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Docker / Compose setup</h2>
+      <p>
+        The server runs as a single container using
+        <span class="inline-code">itzg/minecraft-server</span>.  
+        All data lives in a bind-mounted folder so I can move it to another machine without reinstalling anything.
+      </p>
+
+      <h3><code>docker-compose.yml</code></h3>
+      <pre><code>services:
   mc-server:
     image: itzg/minecraft-server
     container_name: mc-server
@@ -315,40 +183,56 @@ services:
     volumes:
       - "./minecraft-data:/data"
     restart: unless-stopped
-</pre>
-        <div class="metric-row">
-          <div class="metric">
-            <div class="metric-label">Resources (example)</div>
-            <div class="metric-value">~1.7&nbsp;GB RAM</div>
-            <div class="metric-small">Spikes on world gen, then idles low.</div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">Persistence</div>
-            <div class="metric-value"><code>./minecraft-data</code></div>
-            <div class="metric-small">World, plugins &amp; configs live outside the container.</div>
-          </div>
-        </div>
-      </article>
-    </section>
+</code></pre>
 
-    <!-- Optional: screenshot of Docker stats -->
-    <section class="card" style="margin-top:1.5rem;">
-      <h2>Monitoring</h2>
-      <h3>Docker Stats View</h3>
-      <p class="muted">
-        Example container metrics while the server is running. This will look the same when
-        migrated to a Raspberry&nbsp;Pi 5 or a cloud VM.
-      </p>
-      <div class="img-frame">
-        <!-- Put your screenshot file in ./images/docker-stats.png -->
-        <img src="images/docker-stats.png" alt="Docker stats for the mc-server container" />
+      <div class="box">
+        <p><strong>Data directory:</strong> <code>./minecraft-data</code></p>
+        <ul>
+          <li>worlds</li>
+          <li>plugins (including BlueMap)</li>
+          <li>configs / logs</li>
+        </ul>
+        <p class="small">
+          Because everything is in this folder, I can copy <code>minecraft-data</code> and
+          <code>docker-compose.yml</code> to a Raspberry&nbsp;Pi or cloud VM and run
+          <span class="inline-code">docker compose up -d</span> to get the same server.
+        </p>
       </div>
     </section>
 
+    <section>
+      <h2>Why I'm doing it this way</h2>
+      <p>
+        This project is mainly for learning:
+      </p>
+      <ul>
+        <li>running game servers in containers (instead of directly on the host),</li>
+        <li>keeping world data outside the container so it’s portable,</li>
+        <li>exposing services safely over the internet using tunnels instead of raw port forwarding,</li>
+        <li>and eventually moving the same setup to a Raspberry&nbsp;Pi or a cloud VM.</li>
+      </ul>
+
+      <h3>Resource usage (rough)</h3>
+      <p class="small">
+        With Paper + BlueMap, the container sits around ~1.5–2&nbsp;GB RAM after startup on my machine.
+        CPU spikes during world generation and map rendering, then mostly idles.
+      </p>
+
+      <!-- optional screenshot -->
+      <!--
+      <div class="box">
+        <h3>Docker stats screenshot</h3>
+        <div class="img-frame">
+          <img src="images/docker-stats.png" alt="Docker stats for the mc-server container" />
+        </div>
+      </div>
+      -->
+    </section>
+
     <footer>
-      Built for learning Docker, BlueMap and tunnel-based exposure (Playit). Easily portable
-      to a Raspberry&nbsp;Pi or cloud VM using the same Compose file.
+      Notes for my own setup. If you're reading this and want to ask about it,
+      you probably know how to find me.
     </footer>
-  </div>
+  </main>
 </body>
 </html>
