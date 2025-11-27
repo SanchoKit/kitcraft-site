@@ -2,17 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>KitCraft – Minecraft + Docker Notes</title>
+  <title>KitCraft – Minecraft + Docker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --bg: #f6f8fa;
-      --panel: #ffffff;
-      --border: #d0d7de;
-      --text-main: #24292f;
-      --text-muted: #57606a;
-      --code-bg: #f3f4f6;
-      --accent: #0969da;
+      --bg: #313338;        /* Discord app background */
+      --bg-alt: #2b2d31;    /* Channel list / panel */
+      --panel: #1e1f22;     /* Message area */
+      --border: #3f4147;
+      --accent: #5865f2;    /* Blurple */
+      --accent-soft: rgba(88, 101, 242, 0.16);
+      --text-main: #f2f3f5;
+      --text-muted: #b5bac1;
+      --code-bg: #2b2d31;
+      --danger: #f23f43;
+      --success: #3ba55d;
     }
 
     * { box-sizing: border-box; }
@@ -31,45 +35,120 @@
     a:hover { text-decoration: underline; }
 
     main {
-      max-width: 900px;
+      max-width: 980px;
       margin: 0 auto;
-      padding: 2.5rem 1.5rem 3rem;
+      padding: 1.8rem 1.25rem 3rem;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.6rem;
+    }
+
+    .logo-title {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
     }
 
     h1 {
-      margin: 0 0 0.5rem;
-      font-size: 1.9rem;
+      margin: 0;
+      font-size: 1.7rem;
+      font-weight: 700;
+    }
+
+    .tagline {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.55rem;
+    }
+
+    .pill {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.45rem 0.85rem;
+      border-radius: 5px;
+      border: 1px solid transparent;
+      font-size: 0.86rem;
+      cursor: pointer;
+      text-decoration: none;
+      background: var(--panel);
+      color: var(--text-main);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      filter: brightness(1.08);
+    }
+
+    .btn-outline {
+      border-color: var(--border);
+    }
+    .btn-outline:hover {
+      background: #232428;
     }
 
     h2 {
-      margin-top: 2rem;
-      margin-bottom: 0.5rem;
-      font-size: 1.2rem;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0.25rem;
+      margin-top: 1.8rem;
+      margin-bottom: 0.6rem;
+      font-size: 1.05rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
     }
 
     h3 {
-      margin-top: 1.2rem;
+      margin-top: 0.9rem;
       margin-bottom: 0.3rem;
-      font-size: 1rem;
+      font-size: 0.98rem;
     }
 
     p {
-      margin: 0.4rem 0;
-      line-height: 1.5;
+      margin: 0.35rem 0;
+      line-height: 1.45;
       color: var(--text-muted);
     }
 
     ul {
-      margin: 0.3rem 0 0.6rem 1.2rem;
+      margin: 0.15rem 0 0.6rem 1.25rem;
       padding: 0;
       color: var(--text-muted);
+      font-size: 0.92rem;
     }
 
     code {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 0.9rem;
+      font-size: 0.86rem;
     }
 
     pre {
@@ -77,36 +156,98 @@
       border-radius: 6px;
       padding: 0.75rem 0.9rem;
       overflow: auto;
-      font-size: 0.9rem;
-      border: 1px solid #e5e7eb;
-    }
-
-    .tagline {
-      margin-bottom: 1.2rem;
+      font-size: 0.86rem;
+      border: 1px solid var(--border);
+      margin-top: 0.4rem;
     }
 
     .inline-code {
       background: var(--code-bg);
-      padding: 0.05rem 0.3rem;
+      padding: 0.05rem 0.35rem;
       border-radius: 4px;
     }
 
-    .box {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.9rem 1rem;
-      margin-top: 0.8rem;
+    .grid {
+      display: grid;
+      gap: 1rem;
     }
 
-    .small {
-      font-size: 0.85rem;
+    @media (min-width: 880px) {
+      .grid-2 {
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      }
+    }
+
+    .card {
+      background: var(--panel);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 0.9rem 1rem 1rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.4rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .label {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
       color: var(--text-muted);
     }
 
-    footer {
-      margin-top: 2.5rem;
+    .small {
       font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .metric-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .metric {
+      flex: 1 1 120px;
+      min-width: 120px;
+      padding: 0.45rem 0.6rem;
+      border-radius: 5px;
+      background: #2b2d31;
+      border: 1px solid #3a3c42;
+      font-size: 0.8rem;
+    }
+
+    .metric-title {
+      color: var(--text-muted);
+      margin-bottom: 0.15rem;
+    }
+
+    .metric-value {
+      font-size: 0.92rem;
+      color: var(--text-main);
+    }
+
+    .metric-note {
+      margin-top: 0.1rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .metric-value.good {
+      color: var(--success);
+    }
+    .metric-value.bad {
+      color: var(--danger);
+    }
+
+    footer {
+      margin-top: 2.4rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
       border-top: 1px solid var(--border);
       padding-top: 0.75rem;
@@ -116,60 +257,81 @@
 <body>
   <main>
     <header>
-      <h1>KitCraft</h1>
-      <p class="tagline">
-        Personal Minecraft server project running in Docker with BlueMap.  
-        Hosted on my own machine for now, easy to move to a Raspberry&nbsp;Pi 5 later.
-      </p>
+      <div class="logo-title">
+        <h1>KitCraft</h1>
+        <p class="tagline">
+          Personal Minecraft server project running in Docker with BlueMap.  
+          Hosted on my own PC for now, designed so I can move it to a Raspberry&nbsp;Pi 5 later.
+        </p>
+        <div class="pill-row">
+          <span class="pill">Minecraft</span>
+          <span class="pill">Docker</span>
+          <span class="pill">BlueMap</span>
+          <span class="pill">Playit tunnel</span>
+        </div>
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary"
+           href="minecraft://?addExternalServer=KitCraft|later-classroom.gl.joinmc.link">
+          Add server in launcher
+        </a>
+        <a class="btn btn-outline"
+           href="http://minimum-mathematics.gl.at.ply.gg:26308"
+           target="_blank" rel="noopener">
+          Open live map
+        </a>
+      </div>
     </header>
 
-    <section>
-      <h2>How to join</h2>
-      <div class="box">
-        <p><strong>Edition:</strong> Java (Paper 1.21.x)</p>
-        <p><strong>Server address:</strong> <code>later-classroom.gl.joinmc.link</code></p>
-        <p class="small">
-          This goes through <a href="https://playit.gg" target="_blank" rel="noopener">Playit.gg</a>,
-          which tunnels traffic to my local <span class="inline-code">25565</span>.
-        </p>
-      </div>
-
-      <h3>Live map</h3>
-      <div class="box">
+    <section class="grid grid-2">
+      <!-- Server info -->
+      <article class="card">
+        <div class="card-header">
+          <div class="label">Server</div>
+        </div>
+        <h3>KitCraft Survival</h3>
         <p>
-          BlueMap is exposed through a second tunnel.  
-          Open the live map here:
+          Vanilla-ish survival world with a fixed border so it doesn’t grow forever.
+          Mainly for building, testing plugins and messing with infra.
         </p>
+        <ul>
+          <li><strong>Version:</strong> Paper 1.21.x (Java)</li>
+          <li><strong>Seed:</strong> <code>1331376639841402888</code></li>
+          <li><strong>World size:</strong> 1000 × 1000 blocks (worldborder around spawn)</li>
+          <li><strong>Map:</strong> BlueMap running in the same container on port <span class="inline-code">8100</span></li>
+        </ul>
+
+        <div class="metric-row">
+          <div class="metric">
+            <div class="metric-title">Join address</div>
+            <div class="metric-value"><code>later-classroom.gl.joinmc.link</code></div>
+            <div class="metric-note">
+              Playit tunnel → <span class="inline-code">localhost:25565</span>.
+            </div>
+          </div>
+          <div class="metric">
+            <div class="metric-title">Live map URL</div>
+            <div class="metric-value"><code>minimum-mathematics.gl.at.ply.gg:26308</code></div>
+            <div class="metric-note">
+              Tunnel to <span class="inline-code">localhost:8100</span>.
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Docker / infra -->
+      <article class="card">
+        <div class="card-header">
+          <div class="label">Infra</div>
+        </div>
+        <h3>Docker + Compose</h3>
         <p>
-          <a href="http://minimum-mathematics.gl.at.ply.gg:26308" target="_blank" rel="noopener">
-            http://minimum-mathematics.gl.at.ply.gg:26308
-          </a>
+          Runs as a single container using
+          <span class="inline-code">itzg/minecraft-server</span>.  
+          All the data lives in a bind-mounted folder (<code>./minecraft-data</code>) so I can
+          copy the whole thing to another machine without reinstalling.
         </p>
-        <p class="small">
-          Under the hood this is just forwarding to <span class="inline-code">localhost:8100</span> on my machine.
-        </p>
-      </div>
-    </section>
-
-    <section>
-      <h2>World details</h2>
-      <ul>
-        <li><strong>Seed:</strong> <code>1331376639841402888</code></li>
-        <li><strong>World size:</strong> 1000 × 1000 blocks (worldborder around spawn)</li>
-        <li><strong>Style:</strong> vanilla-ish survival, mostly for experimenting and building</li>
-      </ul>
-    </section>
-
-    <section>
-      <h2>Docker / Compose setup</h2>
-      <p>
-        The server runs as a single container using
-        <span class="inline-code">itzg/minecraft-server</span>.  
-        All data lives in a bind-mounted folder so I can move it to another machine without reinstalling anything.
-      </p>
-
-      <h3><code>docker-compose.yml</code></h3>
-      <pre><code>services:
+        <pre><code>services:
   mc-server:
     image: itzg/minecraft-server
     container_name: mc-server
@@ -182,57 +344,113 @@
       VERSION: "1.21.1"
     volumes:
       - "./minecraft-data:/data"
-    restart: unless-stopped
-</code></pre>
+    restart: unless-stopped</code></pre>
+      </article>
+    </section>
 
-      <div class="box">
-        <p><strong>Data directory:</strong> <code>./minecraft-data</code></p>
-        <ul>
-          <li>worlds</li>
-          <li>plugins (including BlueMap)</li>
-          <li>configs / logs</li>
-        </ul>
-        <p class="small">
-          Because everything is in this folder, I can copy <code>minecraft-data</code> and
-          <code>docker-compose.yml</code> to a Raspberry&nbsp;Pi or cloud VM and run
-          <span class="inline-code">docker compose up -d</span> to get the same server.
-        </p>
+    <!-- "Live" stats panel (simulated for now) -->
+    <section class="card" style="margin-top: 1.3rem;">
+      <div class="card-header">
+        <div class="label">Runtime</div>
+        <div class="small">Client-side demo – real metrics would need an exposed API.</div>
+      </div>
+      <h3>Container stats (rough)</h3>
+      <p>
+        These numbers are just updated in the browser to show the idea.
+        For real monitoring I’d hook this up to Docker metrics / Prometheus behind another tunnel.
+      </p>
+
+      <div class="metric-row">
+        <div class="metric">
+          <div class="metric-title">CPU</div>
+          <div id="cpuValue" class="metric-value">~0%</div>
+          <div class="metric-note">Simulated idle / spike behaviour.</div>
+        </div>
+        <div class="metric">
+          <div class="metric-title">Memory</div>
+          <div id="memValue" class="metric-value">~0.0 GB</div>
+          <div class="metric-note">Target around 1.5–2 GB in actual Docker stats.</div>
+        </div>
+        <div class="metric">
+          <div class="metric-title">Uptime (session)</div>
+          <div id="uptimeValue" class="metric-value">0m</div>
+          <div class="metric-note">Time since you opened this page.</div>
+        </div>
       </div>
     </section>
 
-    <section>
+    <section style="margin-top: 1.3rem;">
       <h2>Why I'm doing it this way</h2>
       <p>
-        This project is mainly for learning:
+        Mainly a playground to learn and keep notes:
       </p>
       <ul>
-        <li>running game servers in containers (instead of directly on the host),</li>
-        <li>keeping world data outside the container so it’s portable,</li>
-        <li>exposing services safely over the internet using tunnels instead of raw port forwarding,</li>
-        <li>and eventually moving the same setup to a Raspberry&nbsp;Pi or a cloud VM.</li>
+        <li>Running a Minecraft server in Docker instead of directly on Windows.</li>
+        <li>Keeping world + plugins outside the container so it’s portable.</li>
+        <li>Using Playit tunnels instead of touching the router for now.</li>
+        <li>Later goal: move the same <span class="inline-code">docker-compose.yml</span> +
+          <span class="inline-code">minecraft-data</span> to a Raspberry&nbsp;Pi 5 or a cloud VM.</li>
       </ul>
-
-      <h3>Resource usage (rough)</h3>
-      <p class="small">
-        With Paper + BlueMap, the container sits around ~1.5–2&nbsp;GB RAM after startup on my machine.
-        CPU spikes during world generation and map rendering, then mostly idles.
-      </p>
-
-      <!-- optional screenshot -->
-      <!--
-      <div class="box">
-        <h3>Docker stats screenshot</h3>
-        <div class="img-frame">
-          <img src="images/docker-stats.png" alt="Docker stats for the mc-server container" />
-        </div>
-      </div>
-      -->
     </section>
 
     <footer>
-      Notes for my own setup. If you're reading this and want to ask about it,
-      you probably know how to find me.
+      This page is mostly documentation for my own setup and a place to share the join info.
+      Real monitoring (Prometheus / Grafana / etc.) is future work.
     </footer>
   </main>
+
+  <script>
+    // --- simple client-side "fake live" stats ---
+    // This is just for visual feel. For real stats, replace this with fetch()
+    // calls to an API that exposes your Docker/container metrics.
+
+    let startTime = Date.now();
+
+    function updateFakeStats() {
+      const now = Date.now();
+      const seconds = Math.floor((now - startTime) / 1000);
+
+      // Uptime
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      const uptimeText =
+        minutes > 0 ? `${minutes}m ${secs.toString().padStart(2, "0")}s` : `${secs}s`;
+      document.getElementById("uptimeValue").textContent = uptimeText;
+
+      // CPU: idle mostly, occasional spikes
+      let cpu;
+      if (seconds < 20) {
+        // "startup" heavier usage
+        cpu = 40 + Math.random() * 60;
+      } else {
+        // mostly low, sometimes spike
+        const spike = Math.random() < 0.08;
+        cpu = spike ? 40 + Math.random() * 50 : 5 + Math.random() * 20;
+      }
+      cpu = Math.round(cpu * 10) / 10;
+      const cpuEl = document.getElementById("cpuValue");
+      cpuEl.textContent = `~${cpu}%`;
+      cpuEl.className = "metric-value" + (cpu > 80 ? " bad" : cpu > 50 ? "" : " good");
+
+      // Memory: ramp up then hover
+      const memBase = 1.4;
+      const memJitter = (Math.random() - 0.5) * 0.12;
+      let mem = memBase + memJitter;
+      mem = Math.max(1.2, Math.min(2.2, mem));
+      document.getElementById("memValue").textContent = `~${mem.toFixed(2)} GB`;
+    }
+
+    updateFakeStats();
+    setInterval(updateFakeStats, 2000);
+
+    // Example of where you'd fetch real metrics later:
+    /*
+    async function fetchRealStats() {
+      const res = await fetch("https://your-metrics-endpoint.example/metrics.json");
+      const data = await res.json();
+      // then set cpuValue, memValue, etc. from data
+    }
+    */
+  </script>
 </body>
 </html>
